@@ -205,6 +205,8 @@ public class Guia1Ejercicios {
         
         //g
 		
+        /*
+        
         try {
             ps.print("Ingrese su signo del zodiaco en minusculas: ");
             String signo = reader.readLine().toLowerCase(); // Convertir a minúsculas para evitar problemas con mayúsculas
@@ -252,6 +254,13 @@ public class Guia1Ejercicios {
         } catch (IOException e) {
             ps.println("Hubo un error al leer la entrada.");
         }
+        
+        */
+        
+        
+        //Ejercicios punto 2
+       
+        
         
         
 		}
