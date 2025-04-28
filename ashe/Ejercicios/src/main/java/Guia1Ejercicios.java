@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.io.InputStreamReader;
-
+import java.io.*;
 
 
 public class Guia1Ejercicios {
@@ -159,16 +159,111 @@ public class Guia1Ejercicios {
 		
 		*/
 		
+		//F
+        
+        /*
+        
+        try {
+            
+            System.out.print("Ingrese el precio del artículo: ");
+            int precio = Integer.parseInt(reader.readLine());
+            
+            
+            double plan1 = precio - (precio * 0.1);
+            
+      
+            double plan2 = precio + (precio * 0.1);
+            double plan2Cont = plan2 / 2;  
+            double plan2Cuot = (plan2 - plan2Cont) / 2;  
+            
+           
+            double plan3 = precio + (precio * 0.15);
+            double plan3Cont = plan3 * 0.25;  
+            double plan3Cuot = (plan3 - plan3Cont) / 5;  
+            
+           
+            double plan4 = precio + (precio * 0.25);
+            double plan4Cuot1 = (plan4 * 0.6) / 4;  
+            double plan4Cuot2 = (plan4 * 0.4) / 4;  
+            
+       
+            ps.println("A continuación se muestran los precios a pagar en cada plan para este producto:");
+            ps.println("Plan 1: $" + plan1 + " (todo al contado)");
+            ps.println("Plan 2: $" + plan2 + " ($" + plan2Cont + " al contado y 2 cuotas de $" + plan2Cuot + ")");
+            ps.println("Plan 3: $" + plan3 + " ($" + plan3Cont + " al contado y 5 cuotas de $" + plan3Cuot + ")");
+            ps.println("Plan 4: $" + plan4 + " (4 cuotas de $" + plan4Cuot1 + " y 4 cuotas de $" + plan4Cuot2 + ")");
+            
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Ocurrió un error de entrada/salida: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar un número válido.");
+        }
+        
+        */
+        
+        
+        //g
 		
-		
+        try {
+            ps.print("Ingrese su signo del zodiaco en minusculas: ");
+            String signo = reader.readLine().toLowerCase(); // Convertir a minúsculas para evitar problemas con mayúsculas
+
+            switch (signo) {
+                case "aries":
+                    ps.println("Mes aproximado: Marzo - Abril");
+                    break;
+                case "tauro":
+                    ps.println("Mes aproximado: Abril - Mayo");
+                    break;
+                case "geminis":  // Aquí solo usamos "geminis", porque ya lo convertimos a minúsculas
+                    ps.println("Mes aproximado: Mayo - Junio");
+                    break;
+                case "cancer":
+                    ps.println("Mes aproximado: Junio - Julio");
+                    break;
+                case "leo":
+                    ps.println("Mes aproximado: Julio - Agosto");
+                    break;
+                case "virgo":
+                    ps.println("Mes aproximado: Agosto - Septiembre");
+                    break;
+                case "libra":
+                    ps.println("Mes aproximado: Septiembre - Octubre");
+                    break;
+                case "escorpio":
+                    ps.println("Mes aproximado: Octubre - Noviembre");
+                    break;
+                case "sagitario":
+                    ps.println("Mes aproximado: Noviembre - Diciembre");
+                    break;
+                case "capricornio":
+                    ps.println("Mes aproximado: Diciembre - Enero");
+                    break;
+                case "acuario":
+                    ps.println("Mes aproximado: Enero - Febrero");
+                    break;
+                case "piscis":
+                    ps.println("Mes aproximado: Febrero - Marzo");
+                    break;
+                default:
+                    ps.println("Signo no reconocido. Asegurate de escribirlo correctamente.");
+            }
+        } catch (IOException e) {
+            ps.println("Hubo un error al leer la entrada.");
+        }
+        
+        
 		}
+	
+}
 		
 		
 		
 		
 		
 		
-		}
+		
 		
 
 		
