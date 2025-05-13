@@ -13,9 +13,9 @@ Profesor de la materia
 
 # Ramas/Branches
 
-Las clases estan en ramas que se llaman como el tema visto en clase
-Las guias estan en ramas separadas llamadas igual
-Dentro de las ramas de guias estan las carpetas con los ejercicios
+-   Las clases estan en ramas que se llaman como el tema visto en clase
+-   Las guias estan en ramas separadas llamadas igual
+-   Dentro de las ramas de guias estan las carpetas con los ejercicios
 
 
 
