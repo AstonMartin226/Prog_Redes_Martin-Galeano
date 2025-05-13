@@ -12,15 +12,10 @@ Profesor de la materia
 ## 
 
 # Ramas/Branches
-## Clase 1
-Es la rama con el contenido de la clase 1
 
-## Guia_1
-Rama donde se encuentra la guía 1 de la materia.
-
-## files
-Rama dedicada al contenido visto en clase acerca de los archivos
+Las clases estan en ramas que se llaman como el tema visto en clase
+Las guias estan en ramas separadas llamadas igual
+Dentro de las ramas de guias estan las carpetas con los ejercicios
 
 
 
-Me faltan algunas ramas debido a que falté a en la que se creó el repositorio.
