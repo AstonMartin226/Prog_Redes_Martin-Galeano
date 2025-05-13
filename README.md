@@ -20,3 +20,7 @@ Rama donde se encuentra la guía 1 de la materia.
 
 ## files
 Rama dedicada al contenido visto en clase acerca de los archivos
+
+
+
+Me faltan algunas ramas debido a que falté a en la que se creó el repositorio.
