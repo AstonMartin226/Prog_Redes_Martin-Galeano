@@ -1,173 +1,251 @@
 package ejercicios;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Tp1 {
     
-    private static int[] vectorMemoria = new int[5];
-    private static final String ARCHIVO_DATOS = "datos.txt";
-    private static final String ARCHIVO_RESULTADOS = "resultados.txt";
-    private static final String ARCHIVO_ERRORES = "error.txt";
-    
     public static void main(String[] args) {
-        System.out.println("=== INICIO DEL TRABAJO PRÁCTICO ===");
+        System.out.println("=== TRABAJO PRÁCTICO - MANEJO DE DATOS ===\n");
         
-        System.out.println("\n1. Ingresando datos...");
-        ingresarDatos();
+        // Variables principales
+        int[] datosEnMemoria = new int[5];
+        BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
+        PrintStream output = System.out;
         
-        System.out.println("\n2. Procesando datos del vector...");
-        procesarDatosVector();
+        // EJERCICIO 1: Cargar datos en memoria volátil y no volátil
+        output.println(">>> EJERCICIO 1: Cargando datos desde múltiples orígenes <<<");
+        cargarDatosVolatiles(datosEnMemoria, consoleReader, output);
+        crearArchivoNoVolatil(output);
         
-        System.out.println("\n3. Procesando datos de ambos orígenes...");
-        procesarDatosAmbosOrigenes();
+        // EJERCICIO 2: Procesar divisiones y manejar errores
+        output.println("\n>>> EJERCICIO 2: Procesando divisiones y manejando excepciones <<<");
+        procesarOperacionesMatematicas(datosEnMemoria, output);
         
-        System.out.println("\n=== PROCESO COMPLETADO ===");
-        System.out.println("Revisa los archivos generados: resultados.txt y error.txt");
+        output.println("\n=== FINALIZACIÓN EXITOSA DEL PROGRAMA ===");
+        output.println("Archivos generados: resultados.txt y error.txt");
     }
     
-    private static void ingresarDatos() {
-        int[] datosDelSistema = obtenerDatosDelSistema();
-        int[] datosDeArchivo = generarDatosDeConfiguracion();
+    /**
+     * Carga datos en el vector desde diferentes fuentes
+     */
+    private static void cargarDatosVolatiles(int[] memoria, BufferedReader reader, PrintStream ps) {
+        // Fuente 1: Dato basado en tiempo del sistema
+        long timestamp = System.currentTimeMillis();
+        memoria[0] = (int)(timestamp % 89); // Evitar patrones obvios
         
-        System.out.println("=== ORIGEN 1: Datos del sistema ===");
-        for (int i = 0; i < vectorMemoria.length; i++) {
-            vectorMemoria[i] = datosDelSistema[i];
-            System.out.println("Vector[" + i + "] = " + vectorMemoria[i]);
-        }
+        // Fuente 2: Valor fijo predeterminado
+        memoria[1] = 147;
         
-        System.out.println("\n=== ORIGEN 2: Datos de configuración ===");
-        try (PrintWriter writer = new PrintWriter(new FileWriter(ARCHIVO_DATOS))) {
-            for (int dato : datosDeArchivo) {
-                writer.println(dato);
-                System.out.println("Guardado en archivo: " + dato);
+        // Fuente 3: Entrada interactiva del usuario
+        boolean entradaValida = false;
+        while (!entradaValida) {
+            try {
+                ps.print("Por favor, introduce cualquier número entero: ");
+                memoria[2] = Integer.parseInt(reader.readLine());
+                entradaValida = true;
+            } catch (IOException e) {
+                ps.println("Error de I/O. Reintentando...");
+            } catch (NumberFormatException e) {
+                ps.println("Entrada inválida. Debe ser un número entero.");
             }
-        } catch (IOException e) {
-            System.err.println("Error al crear archivo: " + e.getMessage());
+        }
+        
+        // Fuente 4: Forzar ingreso de cero (primer cero requerido)
+        boolean ceroIngresado = false;
+        while (!ceroIngresado) {
+            try {
+                ps.print("IMPORTANTE: Debes ingresar el número 0 exactamente: ");
+                int valorIngresado = Integer.parseInt(reader.readLine());
+                
+                if (valorIngresado == 0) {
+                    memoria[3] = valorIngresado;
+                    ceroIngresado = true;
+                } else {
+                    ps.println("ERROR: Solo se acepta el valor 0. Intenta otra vez.");
+                }
+            } catch (IOException e) {
+                ps.println("Problema de entrada. Reintentando...");
+            } catch (NumberFormatException e) {
+                ps.println("Debes ingresar un número válido (0).");
+            }
+        }
+        
+        // Fuente 5: Lectura desde archivo externo
+        memoria[4] = obtenerDatoDesdeArchivo(ps);
+        
+        // Mostrar contenido del vector
+        ps.println("\n--- CONTENIDO DEL VECTOR EN MEMORIA VOLÁTIL ---");
+        for (int i = 0; i < memoria.length; i++) {
+            ps.println("Posición " + i + ": " + memoria[i]);
         }
     }
     
-    private static int[] obtenerDatosDelSistema() {
-        long tiempoActual = System.currentTimeMillis();
-        int dato1 = (int) (tiempoActual % 100);
-        
-        Runtime runtime = Runtime.getRuntime();
-        long memoriaLibre = runtime.freeMemory();
-        int dato2 = (int) (memoriaLibre % 50);
-        
-        String javaVersion = System.getProperty("java.version");
-        int dato3 = javaVersion.length() % 10;
-        
-        int dato4 = 0;  // Primer cero
-        int dato5 = 0;  // Segundo cero
-        
-        return new int[]{dato1, dato2, dato3, dato4, dato5};
-    }
-    
-    private static int[] generarDatosDeConfiguracion() {
-        int maxConexiones = 20;
-        int timeout = 30;
-        int reintentos = 0;      // Primer cero
-        int bufferSize = 1024;
-        int poolSize = 0;        // Segundo cero
-        int puerto = 8080;
-        
-        return new int[]{maxConexiones, timeout, reintentos, bufferSize, poolSize, puerto};
-    }
-    
-    private static void procesarDatosVector() {
-        limpiarArchivos();
-        
-        System.out.println("División: numero ÷ (siguiente numero - 3)");
-        
-        for (int i = 0; i < vectorMemoria.length - 1; i++) {
-            int numero1 = vectorMemoria[i];
-            int numero2 = vectorMemoria[i + 1] - 3;
-            
-            realizarDivision(numero1, numero2, "Vector-Punto2");
-        }
-    }
-    
-    // IMPORTANTE: NO limpiar archivos, debe AGREGAR a los archivos del punto 2
-    private static void procesarDatosAmbosOrigenes() {
-        System.out.println("División: numero ÷ 3");
-        
-        for (int numero : vectorMemoria) {
-            realizarDivision(numero, 3, "Vector-Punto3");
-        }
-        
-        List<Integer> datosArchivo = leerDatosDelArchivo();
-        for (int numero : datosArchivo) {
-            realizarDivision(numero, 3, "Archivo-Punto3");
-        }
-    }
-    
-    // Usar división entera para que ArithmeticException funcione correctamente
-    private static void realizarDivision(Integer numero1, Integer numero2, String origen) {
+    /**
+     * Lee un dato desde un archivo de entrada
+     */
+    private static int obtenerDatoDesdeArchivo(PrintStream ps) {
+        BufferedReader archivoReader = null;
         try {
-            if (numero1 == null || numero2 == null) {
-                throw new NullPointerException("Valor nulo detectado");
-            }
-            
-            int resultadoEntero = numero1 / numero2; // Para capturar ArithmeticException
-            double resultado = (double) numero1 / numero2;
-            
-            String linea = numero1 + " / " + numero2 + " = " + resultado;
-            guardarEnArchivo(ARCHIVO_RESULTADOS, linea);
-            System.out.println("[" + origen + "] " + linea);
-            
-        } catch (ArithmeticException e) {
-            String error = numero1 + " / " + numero2 + " = ERROR: División por cero";
-            guardarEnArchivo(ARCHIVO_ERRORES, error);
-            System.err.println("[" + origen + "] " + error);
-            
-        } catch (NullPointerException e) {
-            String error = numero1 + " / " + numero2 + " = ERROR: Valor faltante (NullPointerException)";
-            guardarEnArchivo(ARCHIVO_ERRORES, error);
-            System.err.println("[" + origen + "] " + error);
-            
-        } catch (Exception e) {
-            String error = numero1 + " / " + numero2 + " = ERROR: " + e.getMessage();
-            guardarEnArchivo(ARCHIVO_ERRORES, error);
-            System.err.println("[" + origen + "] " + error);
-        }
-    }
-    
-    private static List<Integer> leerDatosDelArchivo() {
-        List<Integer> datos = new ArrayList<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader(ARCHIVO_DATOS))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
+            archivoReader = new BufferedReader(new FileReader("entrada.txt"));
+            String contenido = archivoReader.readLine();
+            return Integer.parseInt(contenido.trim());
+        } catch (IOException e) {
+            ps.println("Advertencia: No se pudo acceder a 'entrada.txt': " + e.getMessage());
+            return 0; // Segundo cero requerido como fallback
+        } catch (NumberFormatException e) {
+            ps.println("Advertencia: Contenido inválido en 'entrada.txt'");
+            return 0; // Segundo cero requerido como fallback
+        } finally {
+            if (archivoReader != null) {
                 try {
-                    int numero = Integer.parseInt(linea.trim());
-                    datos.add(numero);
-                } catch (NumberFormatException e) {
-                    datos.add(null);
+                    archivoReader.close();
+                } catch (IOException e) {
+                    Logger.getLogger(Tp1.class.getName()).log(Level.WARNING, null, e);
                 }
             }
-        } catch (IOException e) {
-            System.err.println("Error al leer archivo: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Genera archivo con datos para memoria no volátil
+     */
+    private static void crearArchivoNoVolatil(PrintStream ps) {
+        File archivoDestino = new File("datosNoVolatiles.txt");
+        FileWriter escritorArchivo = null;
+        BufferedWriter buffer = null;
         
-        return datos;
-    }
-    
-    private static void guardarEnArchivo(String nombreArchivo, String contenido) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(nombreArchivo, true))) {
-            writer.println(contenido);
+        // Datos que incluyen los ceros requeridos
+        int[] informacionPersistente = {
+            obtenerDatoAleatorio(),
+            78,
+            0,    // Primer cero para memoria no volátil
+            156,
+            0,    // Segundo cero para memoria no volátil
+            234
+        };
+        
+        try {
+            escritorArchivo = new FileWriter(archivoDestino, false);
+            buffer = new BufferedWriter(escritorArchivo);
+            
+            buffer.write("--- DATOS ALMACENADOS EN MEMORIA NO-VOLÁTIL ---");
+            buffer.newLine();
+            
+            for (int valor : informacionPersistente) {
+                buffer.write(String.valueOf(valor));
+                buffer.newLine();
+            }
+            
+            buffer.newLine();
+            buffer.write("Generado automáticamente por el sistema de procesamiento");
+            
+            ps.println("\n--- DATOS GUARDADOS EN ARCHIVO (MEMORIA NO-VOLÁTIL) ---");
+            for (int i = 0; i < informacionPersistente.length; i++) {
+                ps.println("Línea " + (i+1) + ": " + informacionPersistente[i]);
+            }
+            
+            ps.println("✓ Archivo '" + archivoDestino.getName() + "' creado correctamente");
+            
         } catch (IOException e) {
-            System.err.println("Error al escribir en archivo " + nombreArchivo + ": " + e.getMessage());
+            Logger.getLogger(Tp1.class.getName()).log(Level.SEVERE, null, e);
+        } finally {
+            try {
+                if (buffer != null) buffer.close();
+                if (escritorArchivo != null) escritorArchivo.close();
+            } catch (IOException e) {
+                Logger.getLogger(Tp1.class.getName()).log(Level.WARNING, null, e);
+            }
         }
     }
     
-    private static void limpiarArchivos() {
+    /**
+     * Genera un dato pseudo-aleatorio basado en propiedades del sistema
+     */
+    private static int obtenerDatoAleatorio() {
+        Runtime sistemaRuntime = Runtime.getRuntime();
+        long memoriaDisponible = sistemaRuntime.freeMemory();
+        return (int)(memoriaDisponible % 127);
+    }
+    
+    /**
+     * Procesa las operaciones matemáticas según especificación del TP
+     */
+    private static void procesarOperacionesMatematicas(int[] vector, PrintStream ps) {
+        // Archivos de salida
+        File archivoExitosos = new File("resultados.txt");
+        File archivoErrores = new File("error.txt");
+        
+        BufferedWriter writerResultados = null;
+        BufferedWriter writerErrores = null;
+        
         try {
-            new PrintWriter(ARCHIVO_RESULTADOS).close();
-            new PrintWriter(ARCHIVO_ERRORES).close();
-        } catch (IOException e) {
-            System.err.println("Error al limpiar archivos: " + e.getMessage());
+            // Inicializar escritores
+            writerResultados = new BufferedWriter(new FileWriter(archivoExitosos));
+            writerErrores = new BufferedWriter(new FileWriter(archivoErrores));
+            
+            ps.println("Ejecutando operación: numero ÷ (numero_siguiente - 3)");
+            
+            // Procesar cada elemento del vector
+            for (int indice = 0; indice < vector.length; indice++) {
+                int numeroActual = vector[indice];
+                
+                try {
+                    // Verificar existencia del siguiente número
+                    if (indice + 1 >= vector.length) {
+                        throw new ArrayIndexOutOfBoundsException("No existe elemento siguiente en el vector");
+                    }
+                    
+                    int numeroSiguiente = vector[indice + 1];
+                    int divisorCalculado = numeroSiguiente - 3;
+                    
+                    // Verificar división por cero
+                    if (divisorCalculado == 0) {
+                        throw new ArithmeticException("El divisor resultante es cero");
+                    }
+                    
+                    // Realizar cálculo
+                    double resultadoOperacion = (double) numeroActual / divisorCalculado;
+                    
+                    // Guardar resultado exitoso
+                    String lineaResultado = numeroActual + " / " + divisorCalculado + " = " + resultadoOperacion;
+                    writerResultados.write(lineaResultado);
+                    writerResultados.newLine();
+                    
+                    ps.println("✓ " + lineaResultado);
+                    
+                } catch (ArithmeticException excepcionAritmetica) {
+                    int divisorProblematico = vector[indice + 1] - 3;
+                    String mensajeError = numeroActual + " / " + divisorProblematico + " = ArithmeticException: " + excepcionAritmetica.getMessage();
+                    
+                    writerErrores.write(mensajeError);
+                    writerErrores.newLine();
+                    
+                    ps.println("✗ " + mensajeError);
+                    
+                } catch (ArrayIndexOutOfBoundsException excepcionIndice) {
+                    String mensajeError = numeroActual + " / n/a = ArrayIndexOutOfBoundsException: " + excepcionIndice.getMessage();
+                    
+                    writerErrores.write(mensajeError);
+                    writerErrores.newLine();
+                    
+                    ps.println("✗ " + mensajeError);
+                }
+            }
+            
+            ps.println("\n✓ Procesamiento matemático completado exitosamente");
+            
+        } catch (IOException excepcionIO) {
+            Logger.getLogger(Tp1.class.getName()).log(Level.SEVERE, null, excepcionIO);
+        } finally {
+            // Cerrar recursos de forma segura
+            try {
+                if (writerResultados != null) writerResultados.close();
+                if (writerErrores != null) writerErrores.close();
+            } catch (IOException e) {
+                Logger.getLogger(Tp1.class.getName()).log(Level.WARNING, null, e);
+            }
         }
     }
 }

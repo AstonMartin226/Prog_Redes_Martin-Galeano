@@ -1,0 +1,9 @@
+--- DATOS ALMACENADOS EN MEMORIA NO-VOLÁTIL ---
+114
+78
+0
+156
+0
+234
+
+Generado automáticamente por el sistema de procesamiento
