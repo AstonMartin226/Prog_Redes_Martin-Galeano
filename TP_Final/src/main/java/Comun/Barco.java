@@ -4,12 +4,13 @@ package Comun;
  * Representa un barco en el juego
  */
 public class Barco {
+    // ¿Qué necesito de un barco?
     private String nombre;
     private int longitud;
     private int impactos;
     
     /**
-     * Constructor del barco
+     * Constructor del barco - Crear el barco
      * @param nombre Nombre del barco (Portaaviones, Acorazado, etc.)
      * @param longitud Cantidad de casillas que ocupa
      */
@@ -29,6 +30,7 @@ public class Barco {
     /**
      * Verifica si el barco está completamente hundido
      * @return true si los impactos >= longitud
+     // ¿Está hundido? Sí cuando impactos >= longitud
      */
     public boolean estaHundido() {
         return impactos >= longitud;
@@ -46,4 +48,5 @@ public class Barco {
     public int getImpactos() {
         return impactos;
     }
+
 }
