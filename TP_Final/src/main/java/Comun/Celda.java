@@ -4,6 +4,7 @@ package Comun;
  * Representa una celda individual del tablero
  */
 public class Celda {
+    // 1. Atributos - ¿Qué necesito saber de una celda?
     private TipoCelda tipo;
     private boolean disparada;
     private String nombreBarco;
@@ -17,7 +18,7 @@ public class Celda {
         this.nombreBarco = null;
     }
     
-    // Getters
+    // Getters Para leer los datos
     public TipoCelda getTipo() {
         return tipo;
     }
@@ -30,7 +31,7 @@ public class Celda {
         return nombreBarco;
     }
     
-    // Setters
+    // Setters Para modificar los datos
     public void setTipo(TipoCelda tipo) {
         this.tipo = tipo;
     }
@@ -42,4 +43,5 @@ public class Celda {
     public void setNombreBarco(String nombreBarco) {
         this.nombreBarco = nombreBarco;
     }
+
 }
