@@ -2,19 +2,15 @@ package Cliente;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 import Comun.*;
 import Comun.mensajes.*;
 
-/**
- * Cliente para Batalla Naval
- * Se conecta al servidor y permite jugar
- */
+
 public class Cliente {
     private Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private Scanner scanner;
+    private BufferedReader reader;  
     
     private String nombreJugador;
     private Tablero miTablero;
@@ -26,7 +22,7 @@ public class Cliente {
     public Cliente() {
         miTablero = new Tablero();
         tableroEnemigo = new Tablero(); // Solo para visualización
-        scanner = new Scanner(System.in);
+        reader = new BufferedReader(new InputStreamReader(System.in));
         juegoActivo = true;
     }
     
@@ -44,16 +40,16 @@ public class Cliente {
             
             // Solicitar datos de conexión
             System.out.print("Ingresa tu nombre: ");
-            nombreJugador = scanner.nextLine();
+            nombreJugador = reader.readLine();
             
             System.out.print("IP del servidor (enter para localhost): ");
-            String ip = scanner.nextLine();
+            String ip = reader.readLine();
             if (ip.isEmpty()) {
                 ip = "localhost";
             }
             
             System.out.print("Puerto (enter para 5000): ");
-            String puertoStr = scanner.nextLine();
+            String puertoStr = reader.readLine();
             int puerto = puertoStr.isEmpty() ? 5000 : Integer.parseInt(puertoStr);
             
             // Conectar al servidor
@@ -118,16 +114,16 @@ public class Cliente {
                 miTablero.mostrarTablero(false);
                 
                 System.out.print("Fila inicial (0-9): ");
-                int fila = scanner.nextInt();
+                String filaStr = reader.readLine();
+                int fila = Integer.parseInt(filaStr);
                 
                 System.out.print("Columna inicial (0-9): ");
-                int col = scanner.nextInt();
+                String colStr = reader.readLine();
+                int col = Integer.parseInt(colStr);
                 
                 System.out.print("Orientación (H=Horizontal, V=Vertical): ");
-                char orientacion = scanner.next().toUpperCase().charAt(0);
-                boolean horizontal = (orientacion == 'H');
-                
-                scanner.nextLine(); // Limpiar buffer
+                String orientacionStr = reader.readLine().toUpperCase();
+                boolean horizontal = orientacionStr.startsWith("H");
                 
                 // Intentar colocar en el tablero local
                 if (miTablero.colocarBarco(nombre, fila, col, longitud, horizontal)) {
@@ -218,12 +214,12 @@ public class Cliente {
         miTablero.mostrarTablero(false);
         
         System.out.print("\nFila del disparo (0-9): ");
-        int fila = scanner.nextInt();
+        String filaStr = reader.readLine();
+        int fila = Integer.parseInt(filaStr);
         
         System.out.print("Columna del disparo (0-9): ");
-        int col = scanner.nextInt();
-        
-        scanner.nextLine(); // Limpiar buffer
+        String colStr = reader.readLine();
+        int col = Integer.parseInt(colStr);
         
         // Enviar disparo al servidor
         out.writeObject(new MensajeDisparo(fila, col));
@@ -245,18 +241,18 @@ public class Cliente {
             
             switch (msg.getResultado()) {
                 case AGUA:
-                    System.out.println("  💧 AGUA");
+                    System.out.println("  AGUA");
                     // Marcar como fallo en tablero enemigo
                     tableroEnemigo.disparar(fila, col);
                     break;
                 case IMPACTO:
-                    System.out.println("  💥 ¡IMPACTO!");
+                    System.out.println("  ¡IMPACTO!");
                     // Marcar impacto en tablero enemigo
                     tableroEnemigo.getTablero().get(fila).get(col).setTipo(TipoCelda.IMPACTO);
                     tableroEnemigo.getTablero().get(fila).get(col).setDisparada(true);
                     break;
                 case HUNDIDO:
-                    System.out.println("  💀 ¡HUNDIDO! - " + msg.getNombreBarcoHundido());
+                    System.out.println("   ¡HUNDIDO! - " + msg.getNombreBarcoHundido());
                     // Marcar impacto en tablero enemigo
                     tableroEnemigo.getTablero().get(fila).get(col).setTipo(TipoCelda.IMPACTO);
                     tableroEnemigo.getTablero().get(fila).get(col).setDisparada(true);
@@ -318,7 +314,7 @@ public class Cliente {
             if (in != null) in.close();
             if (out != null) out.close();
             if (socket != null) socket.close();
-            if (scanner != null) scanner.close();
+            if (reader != null) reader.close();
             
             System.out.println("\nConexión cerrada.");
         } catch (IOException e) {
