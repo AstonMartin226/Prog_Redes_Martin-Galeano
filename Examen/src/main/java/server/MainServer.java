@@ -1,7 +1,6 @@
 package server;
 
-//código único del profe Galeano: "TU-CODIGO-UNICO: 7399A25E Code: 2EADED"
-//Código único del profe Maldonado: "TU-CODIGO-UNICO: DA002AEC Code: 2EADED"
+//TU-CODIGO-UNICO: 4E0CEC3F Code: BAD0
 
 import java.io.*;
 import java.net.*;
